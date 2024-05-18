@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Newsitem from './Newsitem';
 
 export class news extends Component {
-
   article = [
     {
       "source": {
@@ -73,10 +72,18 @@ export class news extends Component {
 
   constructor(){
     super();
-    console.log("hello i am")
     this.state = {
-      article: this.article
+      articles: this.article // Ensure the state uses the correct key 'articles'
     }
+  }
+
+  async componentDidMount(){
+    console.log("hello")
+    let url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad";
+    let data = await fetch(url);
+    let parsedata = await data.json()
+    console.log(parsedata);
+    this.setState({ articles: parsedata.articles }) // Correctly set 'articles' from the response
   }
 
   render() {
@@ -84,21 +91,19 @@ export class news extends Component {
       <div className="container my-3">
         <h2>Madsnews - top headlines</h2>
         <div className="row">
-
-
-        {this.state.article.map((element) => {
-          return  <div className="col-md-3" key={element.url}>
-          <Newsitem title={element.title.slice(0,45)} description={element.description.slice(0.80)} imageUrl={element.urlToImage}  newsUrl={element.url} />
-                  </div>
-        })}
-
-        
-
-             
-
+          {this.state.articles.map((element) => {
+            return (
+              <div className="col-md-3" key={element.url}>
+                <Newsitem 
+                  title={element.title ? element.title.slice(0, 45) : "No Title"} 
+                  description={element.description ? element.description.slice(0, 95) : "No Description"} 
+                  imageUrl={element.urlToImage} 
+                  newsUrl={element.url} 
+                />
+              </div>
+            )
+          })}
         </div>
-        
-        
       </div>
     )
   }
