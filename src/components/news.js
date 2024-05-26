@@ -80,7 +80,7 @@ export class news extends Component {
   }
 
   async componentDidMount(){
-    let url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=1&pageSize=20";
+    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=1&pageSize=${this.props.pageSize}`;
     let data = await fetch(url);
     let parsedata = await data.json()
     console.log(parsedata);
@@ -90,7 +90,7 @@ export class news extends Component {
   handlePreviouspage = async () =>{
     console.log("previous");
     if (this.state.page > 1) {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=${this.state.page - 1}&pageSize=20`;
+      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
       let data = await fetch(url);
       let parsedata = await data.json();
       console.log(parsedata);
@@ -102,10 +102,10 @@ export class news extends Component {
   }
 
   handlenextpage = async () =>{
-    if(this.state.page + 1 > Math.ceil(this.state.totalresult/20)){
+    if(this.state.page + 1 > Math.ceil(this.state.totalresult/this.props.pageSize)){
 
     }else{
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=${this.state.page + 1}&pageSize=20`;
+      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=0b729f9677644257becfb3d7ec6052ad&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
       let data = await fetch(url);
       let parsedata = await data.json();
       console.log(parsedata);
@@ -121,7 +121,8 @@ export class news extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h2>Madsnews - top headlines</h2>
+        <h2 className='text-center'>Madsnews - top headlines</h2>
+        <spinner/>
         <div className="row">
           {this.state.articles.map((element) => {
             return (
@@ -138,7 +139,7 @@ export class news extends Component {
         </div>
         <div className="container d-flex justify-content-between">
           <button disabled={this.state.page <= 1} type="button" className="btn btn-dark" onClick={this.handlePreviouspage}>&laquo; Previous</button>
-          <button type="button" className="btn btn-dark" onClick={this.handlenextpage}>Next &raquo;</button>
+          <button type="button" disabled={this.state.page + 1 > Math.ceil(this.state.totalresult/this.props.pageSize)} className="btn btn-dark" onClick={this.handlenextpage}>Next &raquo;</button>
         </div>
       </div>
     )
